@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -33,8 +34,14 @@ public class ElementController {
     }
 
     @GetMapping("/{jobNumber}")
-    public ResponseEntity<List<Element>> getAllElements(@PathVariable int jobNumber) {
+    public ResponseEntity<List<Element>> getAllElementsByJobNumber(@PathVariable int jobNumber) {
         return new ResponseEntity<>(elementService.getAllElementsByJobNo(jobNumber), HttpStatus.OK);
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<Void> saveToFile() throws IOException  {
+        elementService.saveToFile();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
