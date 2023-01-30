@@ -17,14 +17,24 @@ public class ElementController {
         this.elementService = elementService;
     }
 
-    @PostMapping()
-    public ResponseEntity<String> saveToDatabase(@RequestParam("file") MultipartFile file) {
-        return new ResponseEntity<>(elementService.loadDataFromCsvFile(file), HttpStatus.CREATED);
+    @PostMapping("/import")
+    public ResponseEntity<String> importOneFile(@RequestParam("file") MultipartFile file) {
+        return new ResponseEntity<>(elementService.loadFromCsvFile(file), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/import-multiple")
+    public ResponseEntity<String> importMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+        return new ResponseEntity<>(elementService.loadFromMultipleCsvFiles(files), HttpStatus.CREATED);
     }
 
     @GetMapping()
     public ResponseEntity<List<Element>> getAllElements() {
-        return new ResponseEntity<>(elementService.getElemets(), HttpStatus.OK);
+        return new ResponseEntity<>(elementService.getAllElements(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{jobNumber}")
+    public ResponseEntity<List<Element>> getAllElements(@PathVariable int jobNumber) {
+        return new ResponseEntity<>(elementService.getAllElementsByJobNo(jobNumber), HttpStatus.OK);
     }
 
 
