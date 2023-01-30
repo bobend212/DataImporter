@@ -3,8 +3,8 @@ package com.example.DataImporter.DTO;
 import com.example.DataImporter.Element.Element;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ElementExportDTO {
     private Long recordsFound;
-    private LocalDateTime date;
+    private Timestamp date;
     private List<Element> elements;
 }

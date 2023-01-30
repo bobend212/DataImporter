@@ -2,6 +2,7 @@ package com.example.DataImporter.Element;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,9 @@ import java.util.List;
 public class ElementService {
 
     private static final String SAMPLE_CSV_FILE = "./sample.csv";
+
+    @Value("${maxSize}")
+    private String maxSize;
 
     private final ElementRepository elementRepository;
     private final FileReader csvFileReader;
@@ -40,7 +44,6 @@ public class ElementService {
     }
 
     public String loadFromMultipleCsvFiles(MultipartFile[] files) {
-        StringBuilder message = new StringBuilder();
         List<String> fileNames = new ArrayList<>();
 
         Arrays.stream(files).forEach(file -> {
@@ -52,7 +55,6 @@ public class ElementService {
             fileNames.add(file.getOriginalFilename());
         });
 
-        message.append("Uploaded the files successfully: ").append(fileNames);
         return String.format("Inserted: %s records", fileNames);
 
     }
@@ -72,7 +74,7 @@ public class ElementService {
         try (
                 BufferedWriter writer = Files.newBufferedWriter(Paths.get(SAMPLE_CSV_FILE));
 
-                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader());
+                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL);
         ) {
             csvPrinter.printRecord("int_ext", "sq_ang", "ref", "material", "grade", "width", "height", "length", "qty", "set_ref", "job_no");
 
