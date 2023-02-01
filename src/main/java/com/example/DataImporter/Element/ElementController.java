@@ -21,13 +21,13 @@ public class ElementController {
     }
 
     @PostMapping("/import")
-    public ResponseEntity<String> importOneFile(@RequestParam("file") MultipartFile file) {
-        return new ResponseEntity<>(elementService.loadFromCsvFile(file), HttpStatus.CREATED);
+    public ResponseEntity<String> importData(@RequestParam("file") MultipartFile file) {
+        return new ResponseEntity<>(elementService.importData(file), HttpStatus.CREATED);
     }
 
     @PostMapping("/import-multiple")
-    public ResponseEntity<String> importMultipleFiles(@RequestParam("files") List<MultipartFile> files) {
-        return new ResponseEntity<>(elementService.loadFromMultipleCsvFiles(files),
+    public ResponseEntity<String> importDataMultipleFiles(@RequestParam("files") List<MultipartFile> files) {
+        return new ResponseEntity<>(elementService.importDataMultipleFiles(files),
                 HttpStatus.CREATED);
     }
 
