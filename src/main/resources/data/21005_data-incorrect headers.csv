@@ -1,4 +1,4 @@
-location,label,side,material,grade,width,height,length,quantity,level
+location,label,side,material,grade,width,height,length,quantity,reference
 INTERNAL,21004_SD1,SQUARE,Floor Joist,C16,38,140,1583,2,FF Joist
 INTERNAL,21004_SD1,SQUARE,Opening Beam,C16,38,140,1583,4,FF Joist
 INTERNAL,21004_SD1,SQUARE,Noggin,C16,38,140,722,1,FF Joist

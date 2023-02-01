@@ -25,12 +25,11 @@ public class ElementController {
         return new ResponseEntity<>(elementService.loadFromCsvFile(file), HttpStatus.CREATED);
     }
 
-    // @PostMapping("/import-multiple")
-    // public ResponseEntity<String> importMultipleFiles(@RequestParam("files")
-    // MultipartFile[] files) {
-    // return new ResponseEntity<>(elementService.loadFromMultipleCsvFiles(files),
-    // HttpStatus.CREATED);
-    // }
+    @PostMapping("/import-multiple")
+    public ResponseEntity<String> importMultipleFiles(@RequestParam("files") List<MultipartFile> files) {
+        return new ResponseEntity<>(elementService.loadFromMultipleCsvFiles(files),
+                HttpStatus.CREATED);
+    }
 
     @GetMapping()
     public ResponseEntity<List<ElementDTO>> getAllElements() {
@@ -44,10 +43,11 @@ public class ElementController {
     // HttpStatus.OK);
     // }
 
-    @PostMapping("/save")
-    public ResponseEntity<Void> saveToFile(@RequestParam String projectNumber, @RequestParam String level)
+    @PostMapping("/report")
+    public ResponseEntity<Void> createReportByProjectAndLevel(@RequestParam String projectNumber,
+            @RequestParam String level)
             throws IOException {
-        elementService.saveToFile(projectNumber, level);
+        elementService.createReportByProjectAndLevel(projectNumber, level);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
