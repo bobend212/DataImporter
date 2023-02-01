@@ -5,7 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import com.example.DataImporter.DTO.ElementDTO;
+
 import java.util.List;
 
 @RestController
@@ -23,26 +24,29 @@ public class ElementController {
         return new ResponseEntity<>(elementService.loadFromCsvFile(file), HttpStatus.CREATED);
     }
 
-    @PostMapping("/import-multiple")
-    public ResponseEntity<String> importMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-        return new ResponseEntity<>(elementService.loadFromMultipleCsvFiles(files), HttpStatus.CREATED);
-    }
+    // @PostMapping("/import-multiple")
+    // public ResponseEntity<String> importMultipleFiles(@RequestParam("files")
+    // MultipartFile[] files) {
+    // return new ResponseEntity<>(elementService.loadFromMultipleCsvFiles(files),
+    // HttpStatus.CREATED);
+    // }
 
     @GetMapping()
-    public ResponseEntity<List<Element>> getAllElements() {
+    public ResponseEntity<List<ElementDTO>> getAllElements() {
         return new ResponseEntity<>(elementService.getAllElements(), HttpStatus.OK);
     }
 
-    @GetMapping("/{jobNumber}")
-    public ResponseEntity<List<Element>> getAllElementsByJobNumber(@PathVariable int jobNumber) {
-        return new ResponseEntity<>(elementService.getAllElementsByJobNo(jobNumber), HttpStatus.OK);
-    }
+    // @GetMapping("/{jobNumber}")
+    // public ResponseEntity<List<Element>> getAllElementsByJobNumber(@PathVariable
+    // int jobNumber) {
+    // return new ResponseEntity<>(elementService.getAllElementsByJobNo(jobNumber),
+    // HttpStatus.OK);
+    // }
 
-    @PostMapping("/save")
-    public ResponseEntity<Void> saveToFile() throws IOException  {
-        elementService.saveToFile();
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
+    // @PostMapping("/save")
+    // public ResponseEntity<Void> saveToFile() throws IOException {
+    // elementService.saveToFile();
+    // return new ResponseEntity<>(HttpStatus.OK);
+    // }
 
 }

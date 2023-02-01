@@ -2,6 +2,13 @@ package com.example.DataImporter.Element;
 
 import lombok.*;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.example.DataImporter.Enums.Location;
+import com.example.DataImporter.Enums.Side;
+import com.example.DataImporter.Project.Project;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,11 +24,13 @@ public class Element {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String intExt;
+    @Enumerated(EnumType.STRING)
+    private Location location;
 
-    private String sqAng;
+    private String label;
 
-    private String ref;
+    @Enumerated(EnumType.STRING)
+    private Side side;
 
     private String material;
 
@@ -33,9 +42,12 @@ public class Element {
 
     private int length;
 
-    private int qty;
+    private int quantity;
 
-    private String setRef;
+    private String reference;
 
-    private int jobNo;
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 }
