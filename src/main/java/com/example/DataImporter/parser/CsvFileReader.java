@@ -58,7 +58,7 @@ public class CsvFileReader implements FileReader {
                     .height(parseInt(record.get("height")))
                     .length(parseInt(record.get("length")))
                     .quantity(parseInt(record.get("quantity")))
-                    .reference(record.get("reference"))
+                    .level(record.get("level"))
                     .project(project)
                     .build());
         }

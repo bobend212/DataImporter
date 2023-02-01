@@ -12,18 +12,16 @@ import com.example.DataImporter.exception.NotFoundException;
 import com.example.DataImporter.parser.FileReader;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class ElementService {
-
-    private static final String SAMPLE_CSV_FILE = "./sample.csv";
 
     @Value("${maxSize}")
     private String maxSize;
@@ -89,31 +87,34 @@ public class ElementService {
         return elementRepository.findAll().stream().map(elementMapper::elementToDTO).toList();
     }
 
-    // public List<Element> getAllElementsByJobNo(int jobNo) {
-    // return elementRepository.findAll().stream().filter(record ->
-    // record.getJobNo() == jobNo).toList();
-    // }
+    public void saveToFile(String projectNumber, String level) throws IOException {
 
-    public void saveToFile() throws IOException {
+        var findProjectId = projectRepository.findByNumber(projectNumber).getId();
 
-        // var allElementsByJobNo = getAllElementsByJobNo(21004);
+        var findElements = elementRepository.findAll().stream()
+                .filter(el -> el.getProject().getId() == findProjectId && el.getLevel().equalsIgnoreCase(level))
+                .toList();
 
-        // try (
-        // BufferedWriter writer = Files.newBufferedWriter(Paths.get(SAMPLE_CSV_FILE));
+        File file = new File(
+                "src/main/resources/results/" + projectNumber + "_"
+                        + new SimpleDateFormat("yyyy-MM-dd HHmmss").format(new Date())
+                        + "_results.csv");
+        String absolutePath = file.getAbsolutePath();
 
-        // CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL);
-        // ) {
-        // csvPrinter.printRecord("int_ext", "sq_ang", "ref", "material", "grade",
-        // "width", "height", "length", "qty", "set_ref", "job_no");
+        try (
+                BufferedWriter writer = Files.newBufferedWriter(Paths.get(absolutePath));
 
-        // for (Element e : allElementsByJobNo) {
-        // csvPrinter.printRecord(e.getIntExt(), e.getSqAng(), e.getRef(),
-        // e.getMaterial(), e.getGrade(),
-        // e.getWidth(), e.getHeight(), e.getLength(), e.getQty(), e.getSetRef(),
-        // e.getJobNo());
-        // }
+                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL);) {
+            csvPrinter.printRecord("location", "label", "side", "material", "grade",
+                    "width", "height", "length", "quantity", "level");
 
-        // csvPrinter.flush();
-        // }
+            for (Element e : findElements) {
+                csvPrinter.printRecord(e.getLocation(), e.getLabel(), e.getSide(),
+                        e.getMaterial(), e.getGrade(),
+                        e.getWidth(), e.getHeight(), e.getLength(), e.getQuantity(), e.getLevel());
+            }
+
+            csvPrinter.flush();
+        }
     }
 }

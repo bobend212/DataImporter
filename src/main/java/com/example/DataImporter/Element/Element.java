@@ -44,7 +44,7 @@ public class Element {
 
     private int quantity;
 
-    private String reference;
+    private String level;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)

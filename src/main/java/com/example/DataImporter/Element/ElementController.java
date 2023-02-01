@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.DataImporter.DTO.ElementDTO;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -43,10 +44,11 @@ public class ElementController {
     // HttpStatus.OK);
     // }
 
-    // @PostMapping("/save")
-    // public ResponseEntity<Void> saveToFile() throws IOException {
-    // elementService.saveToFile();
-    // return new ResponseEntity<>(HttpStatus.OK);
-    // }
+    @PostMapping("/save")
+    public ResponseEntity<Void> saveToFile(@RequestParam String projectNumber, @RequestParam String level)
+            throws IOException {
+        elementService.saveToFile(projectNumber, level);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
