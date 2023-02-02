@@ -1,16 +1,14 @@
 package com.example.DataImporter.Element;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.example.DataImporter.DTO.ElementDTO;
 import com.example.DataImporter.Project.Project;
 import com.example.DataImporter.Project.ProjectRepository;
 import com.example.DataImporter.exception.NotFoundException;
 import com.example.DataImporter.parser.FileReader;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,15 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ElementService {
-
-    @Value("${maxSize}")
-    private String maxSize;
 
     private final ElementRepository elementRepository;
     private final ProjectRepository projectRepository;
@@ -34,7 +27,7 @@ public class ElementService {
     private final ElementMapper elementMapper;
 
     public ElementService(ElementRepository elementRepository, ProjectRepository projectRepository,
-            FileReader csvFileReader, ElementMapper elementMapper) {
+                          FileReader csvFileReader, ElementMapper elementMapper) {
         this.elementRepository = elementRepository;
         this.csvFileReader = csvFileReader;
         this.projectRepository = projectRepository;
@@ -43,7 +36,7 @@ public class ElementService {
 
     public String importData(MultipartFile file) {
 
-        String projectNumber = file.getOriginalFilename().split("_")[0];
+        String projectNumber = Objects.requireNonNull(file.getOriginalFilename()).split("_")[0];
 
         if (!checkIfProjectExist(projectNumber)) {
             throw new NotFoundException(
@@ -67,7 +60,7 @@ public class ElementService {
 
         List<String> projectNumbersList = new ArrayList<>();
         files.forEach(file -> {
-            projectNumbersList.add(file.getOriginalFilename().split("_")[0]);
+            projectNumbersList.add(Objects.requireNonNull(file.getOriginalFilename()).split("_")[0]);
         });
 
         if (!checkIfAllProjectsExist(projectNumbersList)) {
@@ -78,7 +71,7 @@ public class ElementService {
         files.forEach(file -> {
             try {
                 elementRepository.saveAll(csvFileReader.readFile(file.getInputStream(),
-                        projectRepository.findByNumber(file.getOriginalFilename().split("_")[0])));
+                        projectRepository.findByNumber(Objects.requireNonNull(file.getOriginalFilename()).split("_")[0])));
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save multiple csv files: " +
                         e.getMessage());
@@ -98,7 +91,7 @@ public class ElementService {
         var findProjectId = projectRepository.findByNumber(projectNumber).getId();
 
         var findElements = elementRepository.findAll().stream()
-                .filter(el -> el.getProject().getId() == findProjectId && el.getLevel().equalsIgnoreCase(level))
+                .filter(el -> Objects.equals(el.getProject().getId(), findProjectId) && el.getLevel().equalsIgnoreCase(level))
                 .toList();
 
         File file = new File(
@@ -135,7 +128,6 @@ public class ElementService {
 
     private Boolean checkIfAllProjectsExist(List<String> projectNumbers) {
         var dbProjects = projectRepository.findAll().stream().map(Project::getNumber).toList();
-        return projectNumbers.stream()
-                .allMatch(number -> dbProjects.contains(number));
+        return new HashSet<>(dbProjects).containsAll(projectNumbers);
     }
 }
