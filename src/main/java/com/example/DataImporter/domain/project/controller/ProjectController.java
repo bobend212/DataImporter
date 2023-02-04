@@ -1,7 +1,7 @@
 package com.example.DataImporter.domain.project.controller;
 
+import com.example.DataImporter.domain.project.dto.ProjectDTO;
 import com.example.DataImporter.domain.project.service.ProjectService;
-import com.example.DataImporter.domain.project.entity.Project;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Project>> getAllProjects() {
+    public ResponseEntity<List<ProjectDTO>> getAllProjects() {
         return new ResponseEntity<>(projectService.getAllProjects(), HttpStatus.OK);
     }
 }

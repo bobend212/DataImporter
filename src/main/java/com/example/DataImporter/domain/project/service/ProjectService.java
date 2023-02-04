@@ -1,6 +1,7 @@
 package com.example.DataImporter.domain.project.service;
 
-import com.example.DataImporter.domain.project.entity.Project;
+import com.example.DataImporter.domain.project.dto.ProjectDTO;
+import com.example.DataImporter.domain.project.mapper.ProjectMapper;
 import com.example.DataImporter.domain.project.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +11,18 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
+        this.projectMapper = projectMapper;
     }
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public List<ProjectDTO> getAllProjects() {
+
+        return projectRepository.findAll().stream().map(project ->
+                projectMapper.projectToDTO(project).withTotalRows(project.getElements().size())).toList();
+
     }
 
 }
