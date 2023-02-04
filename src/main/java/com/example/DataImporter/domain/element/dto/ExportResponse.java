@@ -1,4 +1,4 @@
-package com.example.DataImporter.DTO;
+package com.example.DataImporter.domain.element.dto;
 
 import lombok.*;
 

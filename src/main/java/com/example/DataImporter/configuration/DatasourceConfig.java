@@ -1,4 +1,4 @@
-package com.example.DataImporter.config;
+package com.example.DataImporter.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;

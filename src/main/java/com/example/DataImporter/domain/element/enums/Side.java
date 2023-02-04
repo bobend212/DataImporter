@@ -1,4 +1,4 @@
-package com.example.DataImporter.Enums;
+package com.example.DataImporter.domain.element.enums;
 
 import lombok.*;
 

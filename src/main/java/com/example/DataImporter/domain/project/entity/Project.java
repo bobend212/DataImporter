@@ -1,10 +1,10 @@
-package com.example.DataImporter.Project;
+package com.example.DataImporter.domain.project.entity;
 
 import lombok.*;
 
 import java.util.List;
 
-import com.example.DataImporter.Element.Element;
+import com.example.DataImporter.domain.element.entity.Element;
 
 import jakarta.persistence.*;
 

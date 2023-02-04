@@ -1,9 +1,9 @@
-package com.example.DataImporter.parser;
+package com.example.DataImporter.domain.element.parser;
 
-import com.example.DataImporter.Element.Element;
-import com.example.DataImporter.Enums.Location;
-import com.example.DataImporter.Enums.Side;
-import com.example.DataImporter.Project.Project;
+import com.example.DataImporter.domain.element.entity.Element;
+import com.example.DataImporter.domain.element.enums.Location;
+import com.example.DataImporter.domain.element.enums.Side;
+import com.example.DataImporter.domain.project.entity.Project;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;

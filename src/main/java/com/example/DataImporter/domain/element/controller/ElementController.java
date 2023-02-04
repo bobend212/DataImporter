@@ -1,6 +1,7 @@
-package com.example.DataImporter.Element;
+package com.example.DataImporter.domain.element.controller;
 
-import com.example.DataImporter.DTO.ElementDTO;
+import com.example.DataImporter.domain.element.service.ElementService;
+import com.example.DataImporter.domain.element.dto.ElementDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

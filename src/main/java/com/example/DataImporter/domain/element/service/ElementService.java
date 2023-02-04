@@ -1,10 +1,13 @@
-package com.example.DataImporter.Element;
+package com.example.DataImporter.domain.element.service;
 
-import com.example.DataImporter.DTO.ElementDTO;
-import com.example.DataImporter.Project.Project;
-import com.example.DataImporter.Project.ProjectRepository;
+import com.example.DataImporter.domain.element.mapper.ElementMapper;
+import com.example.DataImporter.domain.element.dto.ElementDTO;
+import com.example.DataImporter.domain.project.entity.Project;
+import com.example.DataImporter.domain.project.repository.ProjectRepository;
+import com.example.DataImporter.domain.element.entity.Element;
+import com.example.DataImporter.domain.element.repository.ElementRepository;
 import com.example.DataImporter.exception.NotFoundException;
-import com.example.DataImporter.parser.FileReader;
+import com.example.DataImporter.domain.element.parser.FileReader;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.stereotype.Service;

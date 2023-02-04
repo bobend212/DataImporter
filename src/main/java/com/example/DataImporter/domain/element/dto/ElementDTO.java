@@ -1,7 +1,7 @@
-package com.example.DataImporter.DTO;
+package com.example.DataImporter.domain.element.dto;
 
-import com.example.DataImporter.Enums.Location;
-import com.example.DataImporter.Enums.Side;
+import com.example.DataImporter.domain.element.enums.Location;
+import com.example.DataImporter.domain.element.enums.Side;
 
 import lombok.*;
 

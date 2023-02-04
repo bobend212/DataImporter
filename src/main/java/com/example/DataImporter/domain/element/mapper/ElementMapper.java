@@ -1,6 +1,7 @@
-package com.example.DataImporter.Element;
+package com.example.DataImporter.domain.element.mapper;
 
-import com.example.DataImporter.DTO.ElementDTO;
+import com.example.DataImporter.domain.element.dto.ElementDTO;
+import com.example.DataImporter.domain.element.entity.Element;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
