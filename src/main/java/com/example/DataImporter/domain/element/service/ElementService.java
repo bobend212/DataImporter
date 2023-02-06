@@ -1,13 +1,13 @@
 package com.example.DataImporter.domain.element.service;
 
-import com.example.DataImporter.domain.element.mapper.ElementMapper;
 import com.example.DataImporter.domain.element.dto.ElementDTO;
+import com.example.DataImporter.domain.element.entity.Element;
+import com.example.DataImporter.domain.element.mapper.ElementMapper;
+import com.example.DataImporter.domain.element.parser.FileReader;
+import com.example.DataImporter.domain.element.repository.ElementRepository;
 import com.example.DataImporter.domain.project.entity.Project;
 import com.example.DataImporter.domain.project.repository.ProjectRepository;
-import com.example.DataImporter.domain.element.entity.Element;
-import com.example.DataImporter.domain.element.repository.ElementRepository;
 import com.example.DataImporter.exception.NotFoundException;
-import com.example.DataImporter.domain.element.parser.FileReader;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class ElementService {
@@ -122,6 +124,18 @@ public class ElementService {
         } else {
             throw new NotFoundException("Nothing to report.");
         }
+    }
+
+    public void createReportCuttingSummaryByProject(Long projectId) {
+
+        var x = elementRepository.findAll().stream()
+                .filter(el -> el.getProject().getId() == projectId)
+                .toList();
+
+        var grouped = x.stream().collect(groupingBy(Element::getWidth, groupingBy(Element::getHeight)));
+
+        System.out.println();
+
     }
 
     private Boolean checkIfProjectExist(String projectNumber) {
