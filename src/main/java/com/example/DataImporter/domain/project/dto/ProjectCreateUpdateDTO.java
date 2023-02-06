@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectCreateDTO {
+public class ProjectCreateUpdateDTO {
 
     @NotNull
     private String number;

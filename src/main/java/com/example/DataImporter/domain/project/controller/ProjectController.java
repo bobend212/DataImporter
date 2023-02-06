@@ -1,6 +1,6 @@
 package com.example.DataImporter.domain.project.controller;
 
-import com.example.DataImporter.domain.project.dto.ProjectCreateDTO;
+import com.example.DataImporter.domain.project.dto.ProjectCreateUpdateDTO;
 import com.example.DataImporter.domain.project.dto.ProjectDTO;
 import com.example.DataImporter.domain.project.dto.ProjectResponse;
 import com.example.DataImporter.domain.project.service.ProjectService;
@@ -32,7 +32,18 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectResponse> createProject(@Valid @RequestBody ProjectCreateDTO projectCreateDTO) {
-        return new ResponseEntity<>(projectService.createProject(projectCreateDTO), HttpStatus.CREATED);
+    public ResponseEntity<ProjectResponse> createProject(@Valid @RequestBody ProjectCreateUpdateDTO projectCreateUpdateDTO) {
+        return new ResponseEntity<>(projectService.createProject(projectCreateUpdateDTO), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{projectId}")
+    public void deleteProject(@PathVariable Long projectId) {
+        projectService.deleteProject(projectId);
+    }
+
+    @PutMapping("/{projectId}")
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable Long projectId,
+                                                    @Valid @RequestBody ProjectCreateUpdateDTO projectCreateUpdateDTO) {
+        return new ResponseEntity<>(projectService.updateProject(projectId, projectCreateUpdateDTO), HttpStatus.OK);
     }
 }

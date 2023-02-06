@@ -1,6 +1,6 @@
 package com.example.DataImporter.domain.project.service;
 
-import com.example.DataImporter.domain.project.dto.ProjectCreateDTO;
+import com.example.DataImporter.domain.project.dto.ProjectCreateUpdateDTO;
 import com.example.DataImporter.domain.project.dto.ProjectDTO;
 import com.example.DataImporter.domain.project.dto.ProjectResponse;
 import com.example.DataImporter.domain.project.entity.Project;
@@ -34,13 +34,32 @@ public class ProjectService {
                         String.format("Project with ID: %s not found.", projectId)));
     }
 
-    public ProjectResponse createProject(ProjectCreateDTO projectCreateDTO) {
+    public ProjectResponse createProject(ProjectCreateUpdateDTO projectCreateDTO) {
         return projectMapper.projectToProjectResponse(projectRepository.save(
-                projectMapper.projectCreateToProject(ProjectCreateDTO.builder()
+                projectMapper.projectCreateUpdateToProject(ProjectCreateUpdateDTO.builder()
                         .number(projectCreateDTO.getNumber())
                         .name(projectCreateDTO.getName())
                         .build())
         ));
+    }
+
+    public void deleteProject(Long projectId) {
+        var findProject = projectRepository.findById(projectId)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Project with ID: %s not found.", projectId)));
+
+        projectRepository.delete(findProject);
+    }
+
+    public ProjectDTO updateProject(Long projectId, ProjectCreateUpdateDTO projectUpdateDTO) {
+        return projectRepository.findById(projectId).map(project -> {
+                    project.setName(projectUpdateDTO.getName());
+                    project.setNumber(projectUpdateDTO.getNumber());
+                    return projectMapper.projectToDTO(
+                            projectRepository.save(project)).withTotalRows(projectTotalElements(project));
+                })
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Project with ID: %s not found.", projectId)));
     }
 
     private int projectTotalElements(Project project) {
