@@ -1,15 +1,12 @@
 package com.example.DataImporter.domain.element.entity;
 
-import lombok.*;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import com.example.DataImporter.domain.element.enums.Location;
 import com.example.DataImporter.domain.element.enums.Side;
 import com.example.DataImporter.domain.project.entity.Project;
-
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter

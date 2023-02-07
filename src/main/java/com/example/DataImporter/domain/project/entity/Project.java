@@ -1,12 +1,10 @@
 package com.example.DataImporter.domain.project.entity;
 
+import com.example.DataImporter.domain.element.entity.Element;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-
-import com.example.DataImporter.domain.element.entity.Element;
-
-import jakarta.persistence.*;
 
 @Entity
 @Getter

@@ -1,6 +1,7 @@
 package com.example.DataImporter.domain.element.service;
 
 import com.example.DataImporter.domain.element.dto.ElementDTO;
+import com.example.DataImporter.domain.element.dto.ExportResponse;
 import com.example.DataImporter.domain.element.entity.Element;
 import com.example.DataImporter.domain.element.mapper.ElementMapper;
 import com.example.DataImporter.domain.element.parser.FileReader;
@@ -18,10 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
-
-import static java.util.stream.Collectors.groupingBy;
+import java.util.stream.Collectors;
 
 @Service
 public class ElementService {
@@ -91,29 +95,31 @@ public class ElementService {
         return elementRepository.findAll().stream().map(elementMapper::elementToDTO).toList();
     }
 
-    public void createReportByProjectAndLevel(String projectNumber, String level) throws IOException {
+    public ExportResponse createReportByProjectAndLevel(String projectNumber, String level) throws IOException {
 
-        var findProjectId = projectRepository.findByNumber(projectNumber).getId();
+        if (!checkIfProjectExist(projectNumber)) {
+            throw new NotFoundException(
+                    String.format("Project %s does not exist in the Database.",
+                            projectNumber));
+        }
 
-        var findElements = elementRepository.findAll().stream()
-                .filter(el -> Objects.equals(el.getProject().getId(), findProjectId) && el.getLevel().equalsIgnoreCase(level))
-                .toList();
+        var findProject = projectRepository.findByNumber(projectNumber);
+        var elements = elementRepository.findElementsByProjectId(findProject.getId());
 
-        File file = new File(
+        String file = new File(
                 "src/main/resources/results/" + projectNumber + "_" + level + "_"
                         + new SimpleDateFormat("yyyy-MM-dd HHmmss").format(new Date())
-                        + "_result.csv");
-        String absolutePath = file.getAbsolutePath();
+                        + "_result.csv").getAbsolutePath();
 
-        if (findElements.size() > 0) {
+        if (elements.size() > 0) {
             try (
-                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(absolutePath));
+                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(file));
 
                     CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL);) {
                 csvPrinter.printRecord("location", "label", "side", "material", "grade",
                         "width", "height", "length", "quantity", "level");
 
-                for (Element e : findElements) {
+                for (Element e : elements) {
                     csvPrinter.printRecord(e.getLocation(), e.getLabel(), e.getSide(),
                             e.getMaterial(), e.getGrade(),
                             e.getWidth(), e.getHeight(), e.getLength(), e.getQuantity(), e.getLevel());
@@ -124,18 +130,54 @@ public class ElementService {
         } else {
             throw new NotFoundException("Nothing to report.");
         }
+
+        return ExportResponse.builder().message("Report created.").path(file).build();
     }
 
-    public void createReportCuttingSummaryByProject(Long projectId) {
+    public ExportResponse createReportSummary(String projectNumber) throws IOException {
 
-        var x = elementRepository.findAll().stream()
-                .filter(el -> el.getProject().getId() == projectId)
-                .toList();
+        if (!checkIfProjectExist(projectNumber)) {
+            throw new NotFoundException(
+                    String.format("Project %s does not exist in the Database.",
+                            projectNumber));
+        }
 
-        var grouped = x.stream().collect(groupingBy(Element::getWidth, groupingBy(Element::getHeight)));
+        var findProject = projectRepository.findByNumber(projectNumber);
+        var elements = elementRepository.findElementsByProjectId(findProject.getId());
 
-        System.out.println();
+        var groupedElements = elements.stream()
+                .collect(
+                        Collectors.groupingBy(e -> e.getGrade().concat(" ")
+                                        .concat(Integer.toString(e.getWidth()))
+                                        .concat("x")
+                                        .concat(Integer.toString(e.getHeight())),
+                                Collectors.summarizingInt(Element::getLength)));
 
+        DecimalFormatSymbols localeUK = new DecimalFormatSymbols(Locale.UK);
+        DecimalFormat df = new DecimalFormat("#.#", localeUK);
+
+        String file = new File(
+                "src/main/resources/results/" + projectNumber + "_summary" + "_"
+                        + new SimpleDateFormat("yyyy-MM-dd HHmmss").format(new Date())
+                        + "_result.csv").getAbsolutePath();
+
+        if (elements.size() > 0) {
+            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(file));
+                 CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL);) {
+
+                csvPrinter.printRecord("description", "total_length_[mr]");
+
+                for (var e : groupedElements.entrySet()) {
+                    csvPrinter.printRecord(e.getKey(), df.format(e.getValue().getSum() / 1000.0));
+                }
+
+                csvPrinter.flush();
+            }
+        } else {
+            throw new NotFoundException("Nothing to report.");
+        }
+
+        return ExportResponse.builder().message("Report Summary created.").path(file).build();
     }
 
     private Boolean checkIfProjectExist(String projectNumber) {

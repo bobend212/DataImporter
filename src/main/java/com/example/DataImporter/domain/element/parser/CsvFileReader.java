@@ -4,17 +4,16 @@ import com.example.DataImporter.domain.element.entity.Element;
 import com.example.DataImporter.domain.element.enums.Location;
 import com.example.DataImporter.domain.element.enums.Side;
 import com.example.DataImporter.domain.project.entity.Project;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
